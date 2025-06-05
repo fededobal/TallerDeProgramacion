@@ -1,0 +1,145 @@
+programa cuadrados
+procesos
+  proceso asignarEquipos
+  comenzar
+    EnviarMensaje(1,rA1)
+    EnviarMensaje(1,rA2)
+    EnviarMensaje(2,rB1)
+    EnviarMensaje(2,rB2)
+  fin
+  proceso juntarFlores(ES cant:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cant := cant + 1
+  fin
+  proceso depositar2020
+  variables
+    av,ca:numero
+  comenzar
+    av:=PosAv
+    ca:=PosCa
+    mientras(HayFlorEnLaBolsa)
+      BloquearEsquina(20,20)
+      Pos(20,20)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(20,20)
+  fin
+areas
+  cuadradoA: AreaPC(1,1,11,11)
+  cuadradoB: AreaPC(13,1,23,11)
+  aF: AreaP(30,1,30,1)
+  a2020: AreaPC(20,20,20,20)
+robots
+  robot robot1
+  variables
+    eq:numero
+    cant:numero
+    ok:boolean
+  comenzar
+    RecibirMensaje(eq,rF)
+    cant := 0
+    juntarFlores(cant)
+    repetir 10
+      mover
+      juntarFlores(cant)
+    derecha
+    juntarFlores(cant)
+    repetir 10
+      mover
+      juntarFlores(cant)
+    { fin etapa }
+    
+    si(eq = 1)
+      EnviarMensaje(cant,rA2)
+    sino
+      EnviarMensaje(cant,rB2)
+      
+    depositar2020
+    si(eq = 1)
+      EnviarMensaje(ok,rA2)
+    sino
+      EnviarMensaje(ok,rB2)
+  fin
+  
+  robot robot2
+  variables
+    eq:numero
+    cant:numero
+    ok:boolean
+  comenzar
+    RecibirMensaje(eq,rF)
+    si(eq = 1)
+      RecibirMensaje(cant,rA1)
+    sino
+      RecibirMensaje(cant,rB1)
+      
+    repetir 2
+      derecha
+    juntarFlores(cant)
+    repetir 9
+      mover
+      juntarFlores(cant)
+    derecha
+    juntarFlores(cant)
+    repetir 9
+      mover
+      juntarFlores(cant)
+    { fin etapa }
+
+    Informar(cant)
+    depositar2020
+    
+    si(eq = 1)
+      RecibirMensaje(ok,rA1)
+      EnviarMensaje(eq,rF)
+    sino
+      RecibirMensaje(ok,rB1)
+      EnviarMensaje(eq,rF)
+    EnviarMensaje(cant,rF)
+  fin
+
+  robot fiscalizador
+  variables
+    eq:numero
+    cantA:numero
+    cantB:numero
+    ok:boolean
+  comenzar
+    asignarEquipos
+      
+    repetir 2
+      RecibirMensaje(eq,*)
+      si(eq = 1)
+        RecibirMensaje(cantA,rA2)
+      sino
+        RecibirMensaje(cantB,rB2)
+    
+    si(cantA > cantB)
+      Informar(cantA)
+    sino
+      Informar(cantB)
+  fin
+variables
+  rA1:robot1
+  rA2:robot2
+  rB1:robot1
+  rB2:robot2
+  rF:fiscalizador
+comenzar
+  AsignarArea(rA1,cuadradoA)
+  AsignarArea(rA2,cuadradoA)
+  AsignarArea(rB1,cuadradoB)
+  AsignarArea(rB2,cuadradoB)
+  AsignarArea(rA1,a2020)
+  AsignarArea(rA2,a2020)
+  AsignarArea(rB1,a2020)
+  AsignarArea(rB2,a2020)
+  AsignarArea(rF,aF)
+  Iniciar(rA1,1,1)
+  Iniciar(rA2,11,10)
+  Iniciar(rB1,13,1)
+  Iniciar(rB2,23,10)
+  Iniciar(rF,30,1)
+fin
