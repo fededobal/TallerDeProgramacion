@@ -4,7 +4,7 @@ type
     prestamo = record
         ISBN: integer;
         numSocio: integer;
-        dia: integer;
+        dia: integer; 
         mes: integer;
         diasPrestado: integer;
     end;
