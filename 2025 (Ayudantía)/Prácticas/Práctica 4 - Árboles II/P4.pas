@@ -69,9 +69,13 @@ procedure LeerYGenerarEstructuras(var aPrestamos: arbolPrestamos; var aPorISBN: 
     end;
     
     procedure AgregarAdelante(var L: listaPrestamos; p: prestamo);
-    var nue: listaPrestamos;
+    var 
+        nue: listaPrestamos;
     begin
-        new(nue); nue^.dato := p; nue^.sig := L; L := nue;
+        new(nue); 
+        nue^.dato := p; 
+        nue^.sig := L; 
+        L := nue;
     end;
 
     procedure InsertarEnArbolPorISBN(var a: arbolPorISBN; p: prestamo);
@@ -113,7 +117,8 @@ begin
 end;
 
 function CantidadPrestamosSocio_Arbol1(a: arbolPrestamos; socio: integer): integer;
-var cant: integer;
+var 
+    cant: integer;
 begin
     if (a = nil) then CantidadPrestamosSocio_Arbol1 := 0
     else begin
@@ -134,7 +139,7 @@ begin
     else CantidadPrestamosSocio_Arbol2 := ContarEnLista(a^.dato.prestamos, socio) + CantidadPrestamosSocio_Arbol2(a^.HI, socio) + CantidadPrestamosSocio_Arbol2(a^.HD, socio);
 end;
 
-procedure GenerarResumenDesdeArbol1(a: arbolPrestamos; var aResumen: arbolResumen);
+procedure GenerarResumenDesdeArbol1(a: arbolPrestamos; 
     procedure InsertarOIncrementar(var a: arbolResumen; isbn: integer);
     begin
         if (a = nil) then begin
@@ -147,6 +152,8 @@ procedure GenerarResumenDesdeArbol1(a: arbolPrestamos; var aResumen: arbolResume
         else
             InsertarOIncrementar(a^.HD, isbn);
     end;
+var 
+    aResumen: arbolResumen);
 begin
     if (a <> nil) then begin
         InsertarOIncrementar(aResumen, a^.dato.ISBN);
@@ -169,7 +176,8 @@ procedure GenerarResumenDesdeArbol2(a: arbolPorISBN; var aResumen: arbolResumen)
         else
             InsertarResumen(a^.HD, r);
     end;
-var r: resumen;
+var 
+    r: resumen;
 begin
     if (a <> nil) then begin
         r.ISBN := a^.dato.ISBN;
