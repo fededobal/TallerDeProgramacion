@@ -1,8 +1,15 @@
 program BibliotecaPrestamos;
 
 type
-    prestamo = record
+    prestamo = record // dato del nodo del árbol I
         ISBN: integer;
+        numSocio: integer;
+        dia: integer; 
+        mes: integer;
+        diasPrestado: integer;
+    end;
+    
+    prestamo2 = record // dato para el tratamiento de repetidos (lista) del árbol II
         numSocio: integer;
         dia: integer; 
         mes: integer;
@@ -11,7 +18,7 @@ type
     
     listaPrestamos = ^nodoLista;
     nodoLista = record
-        dato: prestamo;
+        dato: prestamo2;
         sig: listaPrestamos;
     end;
     
@@ -54,21 +61,26 @@ procedure LeerYGenerarEstructuras(var aPrestamos: arbolPrestamos; var aPorISBN: 
         if (p.ISBN <> 0) then
         begin
             write('Numero de socio: '); readln(p.numSocio);
-            p.dia := 1; p.mes := 1; p.diasPrestado := 15;
+            p.dia := 1; 
+            p.mes := 1; 
+            p.diasPrestado := 15;
         end;
     end;
     
     procedure InsertarEnArbolPrestamos(var a: arbolPrestamos; p: prestamo);
     begin
         if (a = nil) then begin
-            new(a); a^.dato := p; a^.HI := nil; a^.HD := nil;
+            new(a); 
+            a^.dato := p; 
+            a^.HI := nil; 
+            a^.HD := nil;
         end else if (p.ISBN < a^.dato.ISBN) then
             InsertarEnArbolPrestamos(a^.HI, p)
         else
             InsertarEnArbolPrestamos(a^.HD, p);
     end;
     
-    procedure AgregarAdelante(var L: listaPrestamos; p: prestamo);
+    procedure AgregarAdelante(var L: listaPrestamos; p: prestamo2);
     var 
         nue: listaPrestamos;
     begin
@@ -78,26 +90,34 @@ procedure LeerYGenerarEstructuras(var aPrestamos: arbolPrestamos; var aPorISBN: 
         L := nue;
     end;
 
-    procedure InsertarEnArbolPorISBN(var a: arbolPorISBN; p: prestamo);
+    procedure InsertarEnArbolPorISBN(var a: arbolPorISBN; p: prestamo2; isbnAct: integer);
     begin
         if (a = nil) then begin
-            new(a); a^.dato.ISBN := p.ISBN; a^.dato.prestamos := nil;
+            new(a); 
+            a^.dato.ISBN := isbnAct;
+            a^.dato.prestamos := nil;
             AgregarAdelante(a^.dato.prestamos, p);
-            a^.HI := nil; a^.HD := nil;
-        end else if (p.ISBN = a^.dato.ISBN) then
+            a^.HI := nil; 
+            a^.HD := nil;
+        end else if (isbnAct = a^.dato.ISBN) then
             AgregarAdelante(a^.dato.prestamos, p)
-        else if (p.ISBN < a^.dato.ISBN) then
-            InsertarEnArbolPorISBN(a^.HI, p)
+        else if (isbnAct < a^.dato.ISBN) then
+            InsertarEnArbolPorISBN(a^.HI, p, isbnAct)
         else
-            InsertarEnArbolPorISBN(a^.HD, p);
+            InsertarEnArbolPorISBN(a^.HD, p, isbnAct);
     end;
 
-var p: prestamo;
+var p: prestamo; p2: prestamo2;
 begin
     LeerPrestamo(p);
     while (p.ISBN <> 0) do begin
+        p2.numSocio := p.numSocio;
+        p2.dia := p.dia;
+        p2.mes := p.mes;
+        p2.diasPrestado := p.diasPrestado;
+        
         InsertarEnArbolPrestamos(aPrestamos, p);
-        InsertarEnArbolPorISBN(aPorISBN, p);
+        InsertarEnArbolPorISBN(aPorISBN, p2, p.ISBN);
         LeerPrestamo(p);
     end;
 end;
@@ -139,19 +159,23 @@ begin
     else CantidadPrestamosSocio_Arbol2 := ContarEnLista(a^.dato.prestamos, socio) + CantidadPrestamosSocio_Arbol2(a^.HI, socio) + CantidadPrestamosSocio_Arbol2(a^.HD, socio);
 end;
 
+procedure InsertarOIncrementar(var a: arbolResumen; isbn: integer);
+begin
+    if (a = nil) then begin
+        new(a); 
+        a^.dato.ISBN := isbn; 
+        a^.dato.cantidadPrestamos := 1;
+        a^.HI := nil; 
+        a^.HD := nil;
+    end else if (isbn = a^.dato.ISBN) then
+        a^.dato.cantidadPrestamos := a^.dato.cantidadPrestamos + 1
+    else if (isbn < a^.dato.ISBN) then
+        InsertarOIncrementar(a^.HI, isbn)
+    else
+        InsertarOIncrementar(a^.HD, isbn);
+end;
+
 procedure GenerarResumenDesdeArbol1(a: arbolPrestamos; 
-    procedure InsertarOIncrementar(var a: arbolResumen; isbn: integer);
-    begin
-        if (a = nil) then begin
-            new(a); a^.dato.ISBN := isbn; a^.dato.cantidadPrestamos := 1;
-            a^.HI := nil; a^.HD := nil;
-        end else if (isbn = a^.dato.ISBN) then
-            a^.dato.cantidadPrestamos := a^.dato.cantidadPrestamos + 1
-        else if (isbn < a^.dato.ISBN) then
-            InsertarOIncrementar(a^.HI, isbn)
-        else
-            InsertarOIncrementar(a^.HD, isbn);
-    end;
 var 
     aResumen: arbolResumen);
 begin
