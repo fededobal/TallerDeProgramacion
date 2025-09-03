@@ -9,6 +9,13 @@ type
         diasPrestado: integer;
     end;
     
+    arbolPrestamos = ^nodoArbolPrestamo;
+    nodoArbolPrestamo = record
+        dato: prestamo;
+        HI: arbolPrestamos;
+        HD: arbolPrestamos;
+    end;
+
     prestamo2 = record // dato para el tratamiento de repetidos (lista) del árbol II
         numSocio: integer;
         dia: integer; 
@@ -20,13 +27,6 @@ type
     nodoLista = record
         dato: prestamo2;
         sig: listaPrestamos;
-    end;
-    
-    arbolPrestamos = ^nodoArbolPrestamo;
-    nodoArbolPrestamo = record
-        dato: prestamo;
-        HI: arbolPrestamos;
-        HD: arbolPrestamos;
     end;
 
     prestamoPorISBN = record
