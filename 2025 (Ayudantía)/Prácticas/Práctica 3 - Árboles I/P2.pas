@@ -7,12 +7,6 @@ type
         cantidad: integer;
     end;
     
-    listaVentas = ^nodoLista;
-    nodoLista = record
-        dato: venta;
-        sig: listaVentas;
-    end;
-    
     arbolVentas = ^nodoVentas;
     nodoVentas = record
         dato: venta;
@@ -32,6 +26,17 @@ type
         HD: arbolTotalizado;
     end;
     
+    productoFechaCant = record
+        fecha:integer;
+        cantidad:integer;
+    end;
+
+    listaVentas = ^nodoLista;
+    nodoLista = record
+        dato: productoFechaCant;
+        sig: listaVentas;
+    end;
+
     productoConLista = record
         codigo: integer;
         ventas: listaVentas;
@@ -79,7 +84,7 @@ procedure GenerarDatosYArboles(var aVentas: arbolVentas; var aTotal: arbolTotali
             InsertarOActualizarTotal(a^.HD, v);
     end;
 
-    procedure AgregarAdelante(var L: listaVentas; v: venta);
+    procedure AgregarAdelante(var L: listaVentas; v: productoFechaCant);
     var nue: listaVentas;
     begin
         new(nue);
@@ -88,7 +93,7 @@ procedure GenerarDatosYArboles(var aVentas: arbolVentas; var aTotal: arbolTotali
         L := nue;
     end;
     
-    procedure InsertarOActualizarLista(var a: arbolConLista; v: venta);
+    procedure InsertarOActualizarLista(var a: arbolConLista; v: productoFechaCant);
     begin
         if (a = nil) then
         begin
