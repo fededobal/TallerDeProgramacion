@@ -93,33 +93,34 @@ procedure GenerarDatosYArboles(var aVentas: arbolVentas; var aTotal: arbolTotali
         L := nue;
     end;
     
-    procedure InsertarOActualizarLista(var a: arbolConLista; v: productoFechaCant);
+    procedure InsertarOActualizarLista(var a: arbolConLista; v: productoFechaCant; codigo:integer);
     begin
         if (a = nil) then
         begin
             new(a);
-            a^.dato.codigo := v.codigo;
+            a^.dato.codigo := codigo;
             a^.dato.ventas := nil;
             AgregarAdelante(a^.dato.ventas, v);
             a^.HI := nil;
             a^.HD := nil;
         end
-        else if (v.codigo = a^.dato.codigo) then
+        else if (codigo = a^.dato.codigo) then
             AgregarAdelante(a^.dato.ventas, v)
-        else if (v.codigo < a^.dato.codigo) then
-            InsertarOActualizarLista(a^.HI, v)
+        else if (codigo < a^.dato.codigo) then
+            InsertarOActualizarLista(a^.HI, v, codigo)
         else
-            InsertarOActualizarLista(a^.HD, v);
+            InsertarOActualizarLista(a^.HD, v, codigo);
     end;
 
 var
     v: venta;
+    v3: productoFechaCant;
 begin
     aVentas := nil;
     aTotal := nil;
     aLista := nil;
     randomize;
-    v.codigo := 1 + random(20);
+    v.codigo := random(20);
     while (v.codigo <> 0) do
     begin
         v.fecha := 1 + random(31); 
@@ -128,12 +129,11 @@ begin
 
         InsertarVenta(aVentas, v);
         InsertarOActualizarTotal(aTotal, v);
-        InsertarOActualizarLista(aLista, v);
+        v3.fecha := v.fecha;
+        v3.cantidad := v.cantidad;
+        InsertarOActualizarLista(aLista, v3, v.codigo);
         
-        if (random(5) > 0) then 
-            v.codigo := 1 + random(20)
-        else
-            v.codigo := 0;
+        v.codigo := random(20)
     end;
 end;
 
